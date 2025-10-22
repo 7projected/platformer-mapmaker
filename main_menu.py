@@ -1,22 +1,16 @@
 import scenes, pygame, panel, random
 
-class MainMenu:
+class MainMenu(scenes.Scene):
     def __init__(self, scene_manager:scenes.SceneManager, base_mult, ratio):
-        scene_manager.setup_scene(scenes.MAIN_MENU, self.update, self.draw)
-        self.i = 0
-        self.base_mult = base_mult
-        self.base_screen_size = [ratio[0] * base_mult, ratio[1] * base_mult]
-        self.ratio = ratio
-        self.requested_mult = base_mult
-
+        super().__init__(scene_manager, scenes.MAIN_MENU, base_mult , ratio, self.update, self.draw)
+        
         self.bg_color = [100.0, 100.0, 100.0]
         self.bg_color_default_item = 100
         self.bg_anim_index = 1
         self.bg_anim_add = True
 
         self.panels = [
-            panel.Panel([0, 0], [self.base_screen_size[0] / 5, self.base_screen_size[1]], [255, 255, 255], 0, True, True, 2)
-            
+            panel.Panel([0, 0], [self.base_screen_size[0] / 5, self.base_screen_size[1]], [255, 255, 255], 0, True, True)
         ]
 
     def update(self, mult):

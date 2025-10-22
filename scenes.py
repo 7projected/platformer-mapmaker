@@ -4,6 +4,8 @@ MAIN_MENU = 0
 SPRITE_SELECT = 1
 SPRITE_EDITOR = 2
 
+
+
 class SceneManager:
     def __init__(self, base_mult, ratio):
         self.scene = 0
@@ -32,3 +34,11 @@ class SceneManager:
         self.display_mult = surf_size[0] / self.ratio[0]
         draw_surf = pygame.transform.scale(self.surface, surf_size)
         surf.blit(draw_surf, [0, 0])
+
+class Scene:
+    def __init__(self, scene_manager:SceneManager, scene_num, base_mult, ratio, update, draw):
+        scene_manager.setup_scene(scene_num, update, draw)
+        self.base_mult = base_mult
+        self.base_screen_size = [ratio[0] * base_mult, ratio[1] * base_mult]
+        self.ratio = ratio
+        self.requested_mult = base_mult
