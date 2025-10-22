@@ -2,6 +2,7 @@ import pygame, scenes
 import main_menu
 
 pygame.init()
+pygame.font.init()
 
 def get_requested_screen_size():
     return [int(requested_ratio[0] * requested_mult),
@@ -14,10 +15,11 @@ requested_mult = 80.0
 requested_ratio = [16, 9]
 current_size = [1, 1]
 scene_dict = {}
+font = pygame.font.Font(None, 16)
 
-screen = pygame.display.set_mode([1, 1])
+screen = pygame.display.set_mode([requested_mult * requested_ratio[0], requested_mult * requested_ratio[1]])
 clock = pygame.time.Clock()
-scene_manager = scenes.SceneManager(requested_mult, requested_ratio)
+scene_manager = scenes.SceneManager(requested_mult, requested_ratio, font)
 
 setup_scenes(scene_manager, scene_dict) 
 
@@ -39,7 +41,6 @@ while running:
 
     scene_manager.update()    
 
-    screen.fill((255, 255, 255)) # Fill with white
     scene_manager.draw(screen)
 
     clock.tick(60)

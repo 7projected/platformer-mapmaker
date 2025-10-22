@@ -7,13 +7,16 @@ SPRITE_EDITOR = 2
 
 
 class SceneManager:
-    def __init__(self, base_mult, ratio):
+    def __init__(self, base_mult, ratio, font):
         self.scene = 0
+        self.base_mult = base_mult
         self.display_mult = base_mult
         self.ratio = ratio
+        self.font = font
         self.surface = pygame.Surface([base_mult * ratio[0], base_mult * ratio[1]])
         self.update_callables :dict[callable]= {}
         self.draw_callables :dict[callable]= {}
+        self.mouse_pos = [0, 0]
 
     def setup_scene(self, scene:int, update:callable, draw:callable):
         self.update_callables[self.scene] = update
@@ -24,6 +27,10 @@ class SceneManager:
     
     def update(self):
         self.update_callables[self.scene](self.display_mult)
+        
+        mouse_pos = pygame.mouse.get_pos()
+        current_ratio = [mouse_pos[0] / self.display_mult, mouse_pos[1] / self.display_mult]
+        self.mouse_pos = [current_ratio[0] * self.base_mult, current_ratio[1] * self.base_mult]
 
     def draw(self, surf:pygame.Surface):
         self.surface.fill([0, 0, 0])
