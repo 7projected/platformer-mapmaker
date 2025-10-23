@@ -7,10 +7,10 @@ def int_to_hex(i):
 class Palette:
     def __init__(self):
         self.hex_list = []
-        self.color_list = []
-        self.colors = 8
+        self.colors = []
+        self.color_count = 8
 
-        for i in range(self.colors):
+        for i in range(self.color_count):
             self.hex_list.append("000000") 
         
         self.bake_color_list()
@@ -20,29 +20,29 @@ class Palette:
         g_hex = hex[2] + hex[3]
         b_hex = hex[4] + hex[5]
 
-        return [hex_to_int(r_hex), hex_to_int(g_hex), hex_to_int(b_hex)]
+        return [hex_to_int(r_hex), hex_to_int(g_hex), hex_to_int(b_hex), 255]
 
     def bake_color_list(self):
-        self.color_list = []
+        self.colors = []
 
         for h in self.hex_list:
-            self.color_list.append(self.hex_to_color(h))
+            self.colors.append(self.hex_to_color(h))
     
 
     def generate_pallete(self):
         self.hex_list = []
 
-        for i in range(self.colors):
+        for i in range(self.color_count):
             self.hex_list.append(input(f'Color #{i}:'))
 
-        for i in range(self.colors):
+        for i in range(self.color_count):
             print(self.hex_list[i])
         
         self.bake_color_list()
         self.save_hex(input("Save palette name: "))
 
-    def load_palette(self):
-        self.hex_list = self.read_hex(input("Load palette name: "))
+    def load_palette(self, str):
+        self.hex_list = self.read_hex(str)
         self.bake_color_list()
 
 
