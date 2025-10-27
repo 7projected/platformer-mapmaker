@@ -1,8 +1,8 @@
-import util, pygame
+import util, pygame, palette
 
 
 class Texture:
-    def __init__(self, size, pal = util.Palette, pxl_size = 16):
+    def __init__(self, size, pal = palette.Palette, pxl_size = 16):
         self.palette = pal
         self.map : list = []
         self.size = size
@@ -55,10 +55,11 @@ class Texture:
             coords = [l[0], l[1]]
             char = l[2]
 
-            if char == 'f':
+            if char == 'x':
                 continue
-
-            col = self.palette.colors[util.hex_to_int(f'{char}')]
+            
+            i = util.hex_to_int(f'{char}')
+            col = self.palette.colors[i]
             pygame.draw.rect(self.surf, col, [coords[0] * self.pixel_size, coords[1] * self.pixel_size, self.pixel_size, self.pixel_size])
         
         self.dirty = False
@@ -68,14 +69,18 @@ class Texture:
         surf.blit(self.surf, position)
     
     def set_pixel(self, coords, color):
+        print(color)
         for i, item in enumerate(self.map):
             itm_coords = [item[0], item[1]]
             if itm_coords == coords:
-                self.map[i] = [coords[0], coords[1], color]
+                if color != "x":
+                    self.map[i] = [coords[0], coords[1], util.int_to_hex(color)]
+                else:
+                    self.map[i] = [coords[0], coords[1], 'x']
                 self.dirty = True
 
 class EditTx(Texture):
-    def __init__(self, position, size, pal=util.Palette, pxl_size=16):
+    def __init__(self, position, size, pal=palette.Palette, pxl_size=16):
         super().__init__(size, pal, pxl_size)
         self.position = position
     
@@ -93,7 +98,7 @@ class EditTx(Texture):
         offset_mp = [mp[0] - self.position[0], mp[1] - self.position[1]]
         px_mp = [int(offset_mp[0] / self.pixel_size), int(offset_mp[1] / self.pixel_size)]
 
-        self.set_pixel(px_mp, 'f')
+        self.set_pixel(px_mp, 'x')
 
     def draw(self, surf):
         return super().draw(surf, self.position)

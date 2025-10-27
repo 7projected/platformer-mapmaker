@@ -1,12 +1,16 @@
-import util, pygame, sys, texture
+import util, pygame, sys, texture, palette
 
 # first two bits (ff ff) are the size
 # rest are pointers to indexs in a color palette  (one bit since 16 color pallete)
 
+
+# ADD SAVING AND LOADING OF SPRITES.
+# ADD NICE GUI TO LOAD PALETTES AND SPRITES AND STUFF
+
 class App:
     def __init__(self):
-        self.pal = util.Palette()
-        self.pal.load_palette("purple")
+        self.pal = palette.Palette()
+        self.pal.load_palette('green')
 
         pygame.init() 
 
@@ -14,6 +18,7 @@ class App:
         self.pixel_size = 32
         self.sprite_position = [(1280 / 2) - ((self.sprite_size[0] * self.pixel_size) / 2),
                                 (720 / 2) - ((self.sprite_size[1] * self.pixel_size) / 2)]
+        
         self.sprite = texture.EditTx(self.sprite_position, self.sprite_size, self.pal, self.pixel_size)
         self.sprite.load_sprite_map("test", self.pal)
 
@@ -21,7 +26,7 @@ class App:
         self.screen_size = [1, 1]
 
         self.screen = pygame.display.set_mode([1280, 720])
-        self.size = 100
+        self.color_selection_size = 40
         self.selected_draw_color = self.pal.colors[0]
         self.selected_draw_color_index = 0
 
@@ -29,8 +34,8 @@ class App:
         self.rmb_pressed = False
 
     def try_select_color(self):
-        if pygame.mouse.get_pos()[1] <= self.size:
-            num = pygame.mouse.get_pos()[0] / 100
+        if pygame.mouse.get_pos()[1] <= self.color_selection_size:
+            num = pygame.mouse.get_pos()[0] / self.color_selection_size
             if num <= self.pal.color_count:
                 self.selected_draw_color = self.pal.colors[int(num)]
                 self.selected_draw_color_index = int(num)
@@ -64,9 +69,9 @@ class App:
         self.screen.fill([0, 0, 0])
 
         for i, color in enumerate(self.pal.colors):
-            pygame.draw.rect(self.screen, color, [i * self.size, 0, self.size, self.size])
+            pygame.draw.rect(self.screen, color, [i * self.color_selection_size, 0, self.color_selection_size, self.color_selection_size])
             if i == self.selected_draw_color_index:
-                pygame.draw.rect(self.screen, [0, 0, 0], [i * self.size, 0, self.size, self.size], 8)
+                pygame.draw.rect(self.screen, [0, 0, 0], [i * self.color_selection_size, 0, self.color_selection_size, self.color_selection_size], 8)
 
         self.sprite.draw(self.screen)
 
