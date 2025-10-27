@@ -1,5 +1,6 @@
 import util, pygame
 
+
 class Texture:
     def __init__(self, size, pal = util.Palette, pxl_size = 16):
         self.palette = pal
@@ -57,12 +58,42 @@ class Texture:
             if char == 'f':
                 continue
 
-            col = self.palette.colors[util.hex_to_int(char)]
+            col = self.palette.colors[util.hex_to_int(f'{char}')]
             pygame.draw.rect(self.surf, col, [coords[0] * self.pixel_size, coords[1] * self.pixel_size, self.pixel_size, self.pixel_size])
         
         self.dirty = False
-        print(len(self.map), self.size)
     
     def draw(self, surf, position):
         if self.dirty: self.bake_map()
         surf.blit(self.surf, position)
+    
+    def set_pixel(self, coords, color):
+        for i, item in enumerate(self.map):
+            itm_coords = [item[0], item[1]]
+            if itm_coords == coords:
+                self.map[i] = [coords[0], coords[1], color]
+                self.dirty = True
+
+class EditTx(Texture):
+    def __init__(self, position, size, pal=util.Palette, pxl_size=16):
+        super().__init__(size, pal, pxl_size)
+        self.position = position
+    
+    def draw_tile(self, color):
+        mp = pygame.mouse.get_pos()
+
+        offset_mp = [mp[0] - self.position[0], mp[1] - self.position[1]]
+        px_mp = [int(offset_mp[0] / self.pixel_size), int(offset_mp[1] / self.pixel_size)]
+
+        self.set_pixel(px_mp, color)
+
+    def erase_tile(self):
+        mp = pygame.mouse.get_pos()
+
+        offset_mp = [mp[0] - self.position[0], mp[1] - self.position[1]]
+        px_mp = [int(offset_mp[0] / self.pixel_size), int(offset_mp[1] / self.pixel_size)]
+
+        self.set_pixel(px_mp, 'f')
+
+    def draw(self, surf):
+        return super().draw(surf, self.position)
